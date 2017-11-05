@@ -10,14 +10,14 @@ rm -rf /usr/share/transmission
 mkdir /home/transmission
 mv -f /home/Downloads /home/transmission
 cd /root
-wget -c /root/intltool-0.40.6.tar.gz -O intltool-0.40.6.tar.gz
+wget -c https://github.com/cokan/Transmission/intltool-0.40.6.tar.gz -O intltool-0.40.6.tar.gz
 tar zxf intltool-0.40.6.tar.gz
 cd intltool-0.40.6
 ./configure --prefix=/usr
 make -s
 make -s install
 cd ..
-wget -c /root/libevent-2.0.21-stable.tar.gz -O libevent-2.0.21-stable.tar.gz
+wget -c https://github.com/cokan/Transmission/libevent-2.0.21-stable.tar.gz -O libevent-2.0.21-stable.tar.gz
 tar zxf libevent-2.0.21-stable.tar.gz
 cd libevent-2.0.21-stable
 ./configure
@@ -30,7 +30,7 @@ ln -s /usr/lib/libevent-2.0.so.5 /usr/local/lib/libevent-2.0.so.5
 ln -s /usr/lib/libevent-2.0.so.5.1.9 /usr/local/lib/libevent-2.0.so.5.1.9
 echo install Transmisson
 cd /root
-wget -c /root/transmission-2.84.tar.xz -O transmission-2.84.tar.xz
+wget -c https://github.com/cokan/Transmission/transmission-2.84.tar.xz -O transmission-2.84.tar.xz
 tar Jxvf transmission-2.84.tar.xz
 cd transmission-2.84
 ./configure --prefix=/usr
@@ -38,17 +38,17 @@ make -s
 make -s install
 useradd -m transmission
 passwd -d transmission
-wget /root/transmission.sh -O /etc/init.d/transmissiond
+wget https://github.com/cokan/Transmission/transmission.sh -O /etc/init.d/transmissiond
 chmod 755 /etc/init.d/transmissiond
 chkconfig --add transmissiond
 chkconfig --level 2345 transmissiond on
 mkdir -p /home/transmission/Downloads/
 chmod g+w /home/transmission/Downloads/
-wget -c /root/settings.json
+wget -c https://github.com/cokan/Transmission/settings.json
 mkdir -p /home/transmission/.config/transmission/
 mv -f settings.json /home/transmission/.config/transmission/settings.json
 chown -R transmission.transmission /home/transmission
-wget -c /root/index.html
+wget -c https://github.com/cokan/Transmission/index.html
 mv -f index.html /usr/share/transmission/web/index.html
 service transmissiond start
 iptables -t nat -F
@@ -73,17 +73,15 @@ iptables -t raw -X
 iptables -t raw -P PREROUTING ACCEPT
 iptables -t raw -P OUTPUT ACCEPT
 service iptables save
-service transmissiond stop
-
 echo "========================================================================="
 echo "Install end"
 echo "========================================================================="
 echo ""
 echo "Login: http://ip:9091"
 echo ""
-echo "Default username: cokan"
+echo "Default username: itzmx.com"
 echo ""
-echo "Default password: 447964"
+echo "Default password: itzmx.com"
 echo ""
 echo "Download Folder: /home/transmission/Downloads/"
 echo ""
