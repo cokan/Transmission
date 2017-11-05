@@ -21,14 +21,15 @@ rpc-password 密码
 rpc-port 端口
 rpc-authentication-required 是否开启使用账号密码加密访问
 
+/usr/share/transmission/web/  替换美化包
+
 设置完成后重启服务：
-
 service transmissiond start
+
 3.重启进程
-
 service transmissiond restart
-4.卸载Transmission
 
+4.卸载Transmission
 service transmissiond stop
 rm -rf /home/transmission
 rm -rf /usr/share/transmission
