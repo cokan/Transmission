@@ -1,0 +1,299 @@
+系统为：centos6 64位
+
+python：2.7.13
+
+工作目录：/root
+一、Transmission
+
+1.安装
+
+wget http://github.itzmx.com/1265578519/transmission/master/2.84/transmissionbt.sh -O transmissionbt.sh;sh transmissionbt.sh
+1.1.使用事项
+
+1.访问地址为http://IP：9091，默认用户名和密码均为itzmx.com，文件下载位置:/home/transmission/Downloads/
+
+2.修改端口、用户名和密码 请务必停止服务后修改
+
+service transmissiond stop
+vi /home/transmission/.config/transmission/settings.json
+rpc-username 帐号
+rpc-password 密码
+rpc-port 端口
+rpc-authentication-required 是否开启使用账号密码加密访问
+
+设置完成后重启服务：
+
+service transmissiond start
+3.重启进程
+
+service transmissiond restart
+4.卸载Transmission
+
+service transmissiond stop
+rm -rf /home/transmission
+rm -rf /usr/share/transmission
+2.Transmission的美化
+
+默认的Transmission其实挺丑的，我们可以美化汉化一下
+
+Transmission+Plex，自己的家庭影院 – 初行博客 - 回归初心，记录生活点滴
+
+特别注意因为项目不稳定，一键脚本最近安装后找不到网页文件，造成404问题，推荐手动下载完整包安装！
+
+项目地址：https://github.com/ronggang/transmission-web-control
+
+2.1.手动安装
+
+CentOS版目录：/usr/share/transmission/web/
+
+Debian版目录：/var/lib/transmission-daemon/web
+
+完整包下载：https://github.com/ronggang/transmission-web-control/raw/master/release/transmission-control-full.tar.gz
+
+2.2.一键脚本
+
+wget https://github.com/ronggang/transmission-web-control/raw/master/release/tr-control-easy-install.sh
+bash tr-control-easy-install.sh
+如果需要http而不是https，请使用以下命令：
+
+wget https://github.com/ronggang/transmission-web-control/raw/master/release/tr-control-easy-install-en-http.sh --no-check-certificate
+bash tr-control-easy-install-en-http.sh
+如果需要安装到群晖downloadstation,请下载下列安装脚本并运行：
+
+wget https://github.com/ronggang/transmission-web-control/raw/master/release/ds-control-easy-install.sh
+bash ds-control-easy-install-en-http.sh
+至此Transmission的安装教程结束！
+
+3.使用
+
+懒的写了，傻瓜式，会迅雷下载就能用，这玩意要是不会用基本就告别电脑了。
+
+Transmission+Plex，自己的家庭影院 – 初行博客 - 回归初心，记录生活点滴
+
+4.辅助工具
+
+Transmission有多种客户端，基本覆盖全平台，没有网页端也足够了，又不是干啥，要啥自行车。
+
+4.1.Windows：
+
+1.Transmission-QT 下载地址：https://transmission-qt.en.softonic.com/
+
+2.Transmission-GUI 下载地址：https://sourceforge.net/projects/transgui/
+
+这俩都差不多，就是长得不怎么一样，一般GUI版本的用户多，功能也强大一些。简简单单的下载都能应付。
+
+4.2.Android：
+
+TransDroid 下载地址：http://www.coolapk.com/apk/org.transdroid.full
+
+好看好用，Android平台首推这个软件管理，很方便！
+
+其他平台没怎么用过，不做推荐，基本都有。
+
+二、Flexget
+
+flexget 是扩展 transmission rss订阅下载 的一个强大的工具
+
+以下操作过程:
+
+1. 部署环境
+
+1.1. yum 安装 python 编译环境
+
+yum install -y gcc make zlib zlib-devel readline-devel sqlite sqlite-devel openssl-devel mysql-devel gd-devel openjpeg-devel
+1.2. 下载 python 2.7.13.tgz
+
+wget https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz
+1.3. 解压并安装 python 2.7.13
+
+tar zxf Python-2.7.13.tgz
+pushd Python-2.7.13
+./configure --prefix=/root/python && \
+make && \
+make install && \
+ln -s /root/python/bin/python2.7 /usr/local/bin/python
+source ~/.bash_profile
+popd
+1.4. 下载并安装 pip
+
+wget https://bootstrap.pypa.io/get-pip.py --no-check-certificate
+/usr/local/bin/python get-pip.py
+ln -s /root/python/bin/pip /usr/local/bin/pip
+1.5. 安装 virtualenv
+
+/usr/local/bin/pip install virtualenv
+ln -s /root/python/bin/virtualenv /usr/local/bin/virtualenv
+2. 添加并安装 flexget
+
+cd /root/
+virtualenv /root/flexget/
+/root/flexget/bin/pip install flexget
+2.1. 安装 transmissionrpc 插件(实现transmissionrpc 帐号认证)
+
+/root/flexget/bin/pip install transmissionrpc
+2.2. flexget 配置文件 部分示例(以config.yml命名)
+
+tasks:
+  pt_name:
+    rss: .... # pt rss 订阅地址
+    download: /data/torrent # flexget 下载种子存放位置
+    transmission:
+      host: xxx.xxx.xxx.xxx # transmission 主机ip
+      port: xxxx            # transmission 端口
+      username: xxxx        # transmission 用户名
+      password: xxxx        # transmission 密码
+    regexp:
+      accept:
+        - Colony\.S\d{1,2}E\d+\.720p\.HDTV\.x264-FLEET
+        # Colony.S01E01.720p.HDTV.x264-FLEET
+        # 这个为 殖民地 美剧 的flexget 正则表达式
+       
+        # https://flexget.com/Plugins/regexp
+        # flexget 官方配置介绍
+# https://flexget.com/Plugins/regexp
+# flexget 官方配置介绍
+
+# flexget 配置下载临时目录torrents
+	mkdir -p /home/transmission/torrents/
+	chown -R transmission:transmission /home/transmission/torrents/
+	chmod g+w /home/transmission/torrents/
+
+# flexget 创建RSS配置config.yml
+cd /root/flexget/       
+vi config.yml
+
+# flexget 编辑RSS配置
+tasks:
+  whsir:
+    rss:  https://tp.m-team.cc/torrentrss.php?https=1&rows=20&linktype=dl&passkey=
+    template: default
+    accept_all: yes
+    download: /home/transmission/torrents
+    transmission:
+      path: /home/transmission/Downloads/
+templates:
+  default:
+    transmission:
+      host: localhost
+      port: 9091
+      username: ****
+      password: "****"
+    clean_transmission:
+      enabled: no
+      
+
+
+
+我自己刷MT的配置
+
+config.yml存放位置/root/flexget/，配置里涉及到的存放目录没有的自行创建好
+
+tasks:
+  mt:
+    rss: https://tp.m-team.cc/torrentrss.php?https=1&rows=10&cat410=1&cat429=1&cat424=1&cat430=1&icat=1&isize=1&iuplder=1&linktype=dl&passkey=*****
+    accept_all: yes
+    content_size:
+      min: 256
+      max: 3072
+    download: /home/transmission/torrent
+    transmission:
+      host: 127.0.0.1
+      port: 9091
+      username: user
+      password: password
+    clean_transmission:
+      host: 127.0.0.1
+      port: 9091
+      username: user
+      password: password
+      finished_for: 6 hours
+      tracker: tp.m-team.cc
+      delete_files: Yes      
+    free_space:
+      path: /home/transmission/Downloads
+      space: 3072
+2.3. 运行 flexget
+
+/root/flexget/bin/flexget -c /root/flexget/config.yml execute
+ 2.4.cron任务
+
+crontab -e
+添加以下任务实现每五分钟执行一次检查，这样就能通过flexget实现自动下载和自动删除
+*/5 * * * * /root/flexget/bin/flexget -c /root/flexget/config.yml execute
+三、安装Webdir在线看片
+
+1.安装lnmp
+
+参考：https://lnmp.org/install.html
+
+yum install screen -y
+screen -S lnmp
+wget -c http://soft.vpser.net/lnmp/lnmp1.4.tar.gz && tar zxf lnmp1.4.tar.gz && cd lnmp1.4 && ./install.sh lnmp
+装完退出screen
+
+exit
+ 2.安装webdir
+
+项目地址：https://github.com/maysrp/webdir
+
+作者demo:http://webdir.cc/
+
+如果需要设置密码直接编辑index.php就行
+
+cd /home/transmission/Downloads
+wget https://github.com/maysrp/webdir/raw/master/index.php
+3.配置Nginx
+
+Nginx网站配置文件在/usr/local/nginx/conf/vhost，自己创建好，以下是我的配置文件，https的，http的自己改一下
+
+server
+	{  
+	listen 80;  
+	server_name domain.com;  
+#	rewrite ^(.*)$  https://$host$1 permanent;  
+	return 301 https://$host$request_uri;
+	}  
+
+	server {
+	listen 443;
+	server_name domain.com;
+	root /home/transmission/Downloads;
+	include enable-php.conf;
+
+	ssl on;
+	ssl_certificate /usr/local/nginx/conf/ssl/domain.com.crt;
+	ssl_certificate_key /usr/local/nginx/conf/ssl/domain.com.key;
+	ssl_session_timeout  5m;
+
+	# For .php scripts
+	location ~* \.php$ { 
+		gzip off;
+		include /usr/local/nginx/conf/fastcgi_params;
+		fastcgi_split_path_info ^(.+\.php)(.*)$;
+		fastcgi_pass unix:/dev/shm/fcgiwrap-php.socket;
+	}
+
+	# For .pl scripts
+	location ~* \.pl$ {
+		gzip off;
+		include //usr/local/nginx/conf/fastcgi_params;
+		fastcgi_pass unix:/dev/shm/fcgiwrap.socket;
+	}
+
+	location =/ {
+		rewrite ^/(.*) http://domain.com/index.php permanent;
+	}
+	location ~* /dl {
+		rewrite ^/(.*) http://domain.com:9091 permanent;
+	}
+#	location ~* /tz {
+#		rewrite ^/(.*) http://$SERVER_ADDR/tz.php permanent;
+#	}
+#	access_log  /home/wwwlogs/domain.com.log;
+}
+配置完记得
+
+service nginx restart
+然后访问：域名/dl就是transmission下载器，直接访问域名就是webdir文件目录列表，点击视频文件直接看片。
+
+好了这样就能愉快地自动刷流量，然后没事还能上去来两发，嘿嘿嘿！！！
