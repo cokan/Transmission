@@ -1,0 +1,5 @@
+cd /root/flexget/       
+vi config.yml
+
+
+/root/flexget/bin/flexget -c /root/flexget/config.yml execute
